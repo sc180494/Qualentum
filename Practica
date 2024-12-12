@@ -1,0 +1,23 @@
+energia <- c("Renovable", "No Renovable","No Renovable","Renovable","Renovable","No Renovable","No Renovable","Renovable","No Renovable","No Renovable")
+consumo <- c(12, NA, 18, 20, 17, NA, 13, 19, 21, 14) 
+coste_kwh <- c(0.15, 0.25, 0.25, 0.15, 0.15, 0.25, 0.25, 0.15, 0.25, 0.25)
+
+consumo[is.na(consumo)] <- median(consumo, na.rm = TRUE)
+
+df_consumo <- data.frame(energia=energia, consumo=consumo, coste_kwh=coste_kwh)
+
+df_consumo$coste_total <- df_consumo$consumo * df_consumo$coste_kwh
+
+total_consumo <- tapply(df_consumo$consumo, df_consumo$energia, sum)
+total_costo <- tapply(df_consumo$coste_total, df_consumo$energia, sum)
+
+media_consumo <- tapply(df_consumo$consumo, df_consumo$energia, mean)
+
+df_consumo$ganancia <- df_consumo$coste_total * 1.1
+
+df_consumo <- df_consumo[order(-df_consumo$coste_total), ]
+
+top_3_costos <- head(df_consumo, 3)
+
+resumen_energia <- list(total_consumo = total_consumo,total_costo = total_costo,media_consumo = media_consumo,top_3_costos = top_3_costos)
+resumen_energia
